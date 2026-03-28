@@ -1,17 +1,23 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>JSP - Hello World</title>
-</head>
-<body>
-<h1><%= "Hello World!" %>
-</h1>
-<br/>
-<a href="hello-servlet">Hello Servlet</a>
 
+<%@include file="includes/header.jsp" %>
 
-// The Cosmere RPG, and the PlotWeaver system will likely eventually have an OGL, but for now, I should provide a disclaimer, and attribution.
-<footer>This is unofficial fan content, created and shared for non-commercial use. It has not been reviewed by Dragonsteel Entertainment, LLC or Brotherwise Games, LLC.</footer>
-</body>
-</html>
+    <h1><%= "Welcome to the Cosmere RPG!" %></h1>
+    <br/>
+    <form  action="search" method="post">
+        <label>Search in Talent Description:
+            <input type="text" name="descriptionSearch"/>
+        </label>
+        <br/>
+        <label>Search in Talent Name:
+            <input type="text" name="nameSearch"/>
+        </label>
+        <br/>
+        <label>Search in Talent Flavor Text:
+            <input type="text" name="flavorSearch"/>
+        </label>
+        <br/>
+        <input type="submit" value="Search" />
+    </form>
+    <br/>
+
+<%@include file="includes/footer.jsp" %>
