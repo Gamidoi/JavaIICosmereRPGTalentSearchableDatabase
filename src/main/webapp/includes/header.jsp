@@ -3,6 +3,7 @@
 <html>
     <head>
         <title>Cosmere RPG searchable org.example.cis175_fp_cosmererpgtalentsdatabaseandcharactertracking.Talent Database.</title>
+        <link rel="stylesheet" href="styles/styles.css">
     </head>
     <body>
 

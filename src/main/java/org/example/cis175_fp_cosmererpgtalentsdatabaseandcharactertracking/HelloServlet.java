@@ -21,9 +21,17 @@ public class HelloServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection conn = pool.getConnection();
         String url = "/searchResultsPage.jsp";
         ResultSet output = null;
         String sqlQuery = "SELECT * FROM talent";
+        sqlQuery += " left join talentbranch on talent.TalentBranchID = talentbranch.TalentBranchID";
+        sqlQuery += " left join talentbranchswitchradiantpath on talentBranch.TalentBranchID = talentbranchswitchradiantpath.TalentBranchID";
+        sqlQuery += " left join radiantpath on talentbranchswitchradiantpath.RadiantPathID = radiantpath.RadiantPathID";
+        sqlQuery += " left join talentbranchswitchheroicpath on talentBranch.TalentBranchID = talentbranchswitchheroicpath.TalentBranchID";
+        sqlQuery += " left join heroicpath on talentbranchswitchheroicpath.HeroicPathID = heroicpath.HeroicPathID";
+
 
         String descriptionSearch = request.getParameter("descriptionSearch");
         String nameSearch = request.getParameter("nameSearch");
@@ -54,11 +62,6 @@ public class HelloServlet extends HttpServlet {
         }
         System.out.println(sqlQuery);
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // not the best security letting the username and password be in the code like this. But, currently that is
-            // a user that only has permission to Select from the database, so the vulnerability is minimal.
-            // Connection conn = DriverManager.getConnection("jdbc:mysql://192.50.0.128:3306", "readOnly", "BadPassword");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cosmererpgtalentsprojecthapke", "readOnly", "BadPassword");
             output = conn.createStatement().executeQuery(sqlQuery);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -69,10 +72,38 @@ public class HelloServlet extends HttpServlet {
         ArrayList<Talent> talentResults = new ArrayList<>();
         try {
             while(output.next()) {
+                boolean repeatEntryForRadiantPath = false;
                 Talent eachTalent = new Talent();
+                eachTalent.setPrimaryKey(output.getInt("TalentID"));
                 eachTalent.setName(output.getString("TalentName"));
                 eachTalent.setDescription(output.getString("TalentDescription"));
                 eachTalent.setFlavorText(output.getString("FlavorText"));
+                eachTalent.setActionType(output.getString("ActionType"));
+                eachTalent.setBranch(output.getString("BranchName"));
+                eachTalent.setActionCost(output.getInt("ActionCost"));
+                eachTalent.setFocusCost(output.getInt("FocusCost"));
+                eachTalent.setInvestitureCost(output.getInt("InvestitureCost"));
+
+                String radiantPathName = output.getString("RadiantOrderName");
+                int radiantPathID = output.getInt("RadiantPathID");
+                String heroicPathName = output.getString("HeroicPathName");
+                int heroicPathID = output.getInt("heroicPathID");
+                if (radiantPathName != null) {
+                    if (talentResults.getLast().getPrimaryKey() == eachTalent.getPrimaryKey()) {
+                        talentResults.getLast().setRadiantPath2(radiantPathName);
+                        talentResults.getLast().setRadiantPath2ID(radiantPathID);
+                        repeatEntryForRadiantPath = true;
+                    } else {
+                        eachTalent.setRadiantPath1(radiantPathName);
+                        eachTalent.setRadiantPath1ID(radiantPathID);
+                    }
+                }
+                if (repeatEntryForRadiantPath){continue;}
+                if (heroicPathName != null){
+                    eachTalent.setPath(heroicPathName);
+                    eachTalent.setPathID(heroicPathID);
+                }
+
                 talentResults.add(eachTalent);
             }
         } catch (Exception e){
@@ -80,6 +111,7 @@ public class HelloServlet extends HttpServlet {
         }
 
         request.setAttribute("talentResults", talentResults);
+        pool.freeConnection(conn);
 
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
