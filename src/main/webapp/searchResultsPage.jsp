@@ -6,18 +6,18 @@
 <%@include file="includes/talentDescriptionSearchbars.jsp" %>
 <c:choose>
     <c:when test="${talentResults.size() > 0}">
-        <table class="resultTable">
+        <div class="resultTableDiv"><table class="resultTable">
             <tr>
                 <th>Name</th>
-                <th>Description</th>
+                <th class="wideTableColumn">Talent Description</th>
                 <th>Action Type</th>
                 <th>Action Cost</th>
                 <th>Focus Cost</th>
-                <th>Investiture Cost</th>
+                <th>Invest. Cost</th>
                 <th>Talent Branch</th>
                 <th>Heroic Path</th>
                 <th>Radiant Path</th>
-                <th>Flavor Text</th>
+                <th class="wideTableColumn">Flavor Text</th>
             </tr>
             <c:forEach var="talent" items="${talentResults}">
                 <tr>
@@ -41,7 +41,7 @@
                     <td>${talent.flavorText}</td>
                 </tr>
             </c:forEach>
-        </table>
+        </table></div>
     </c:when>
     <c:otherwise>
         <h1>The Search returned no results</h1>

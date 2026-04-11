@@ -66,7 +66,7 @@ public class HelloServlet extends HttpServlet {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();
-            message = "Whoops!";
+            message = "There was a problem reaching the database, your search could not be completed.";
         }
 
         ArrayList<Talent> talentResults = new ArrayList<>();

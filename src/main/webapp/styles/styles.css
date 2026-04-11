@@ -1,6 +1,6 @@
 
 body {
-    background-color: #000000;
+    background-color: #000000FF;
     font-size: 12px;
     color: #FAEBD7FF;
 }
@@ -8,6 +8,13 @@ body {
     border: #DAA520FF 1px solid;
     border-collapse: collapse;
     padding-top: 5px;
+}
+.resultTableDiv {
+    margin-right: 5px;
+    border: #DAA520FF 3px solid;
+    max-height: 700px;
+    overflow-y: auto;
+    width: 100%;
 }
 th {
     border: #DAA520FF 1px solid;
@@ -31,4 +38,20 @@ td {
 }
 .toggleViewMore:hover {
     background-color: #333355FF;
+}
+.wideTableColumn{
+    min-width: 250px;
+}
+
+
+@media screen and (max-width: 767px) {
+    body {
+        background-color: #111111FF;
+    }
+    .resultTableDiv {
+        overflow-x: auto;
+        max-height: 500px;
+        overflow-y: auto;
+
+    }
 }
