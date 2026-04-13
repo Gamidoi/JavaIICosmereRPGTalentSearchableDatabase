@@ -1,23 +1,29 @@
 
+
 <%@include file="includes/header.jsp" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-
 <%@include file="includes/talentDescriptionSearchbars.jsp" %>
+
+<p onclick="sortBy('TalentName')">This is a test "button"</p>
 <c:choose>
     <c:when test="${talentResults.size() > 0}">
+        <form id="sortForm" action="search" method="post">
+            <input type="hidden" name="descriptionSearch" value="${descriptionSearch}">
+            <input type="hidden" name="nameSearch" value="${nameSearch}">
+            <input type="hidden" name="flavorSearch" value="${flavorSearch}">
+            <input id="sortBy" type="hidden" name="sortBy" value="${sortBy}">
+            <input id="ascending" type="hidden" name="ascending" value="${ascending}">
         <div class="resultTableDiv"><table class="resultTable">
             <tr>
-                <th>Name</th>
-                <th class="wideTableColumn">Talent Description</th>
-                <th>Action Type</th>
-                <th>Action Cost</th>
-                <th>Focus Cost</th>
-                <th>Invest. Cost</th>
-                <th>Talent Branch</th>
-                <th>Heroic Path</th>
-                <th>Radiant Path</th>
-                <th class="wideTableColumn">Flavor Text</th>
+                <th onClick="sortBy('TalentName')">Name</th>
+                <th class="wideTableColumn" onClick="sortBy('TalentDescription')">Talent Description</th>
+                <th onClick="sortBy('ActionType')">Action Type</th>
+                <th onClick="sortBy('ActionCost')">Action Cost</th>
+                <th onClick="sortBy('FocusCost')">Focus Cost</th>
+                <th onClick="sortBy('InvestitureCost')">Invest. Cost</th>
+                <th onClick="sortBy('BranchName')">Talent Branch</th>
+                <th onClick="sortBy('HeroicPathName')">Heroic Path</th>
+                <th onClick="sortBy('RadiantOrderName')">Radiant Path</th>
+                <th class="wideTableColumn" onClick="sortBy('FlavorText')">Flavor Text</th>
             </tr>
             <c:forEach var="talent" items="${talentResults}">
                 <tr>
@@ -41,7 +47,7 @@
                     <td>${talent.flavorText}</td>
                 </tr>
             </c:forEach>
-        </table></div>
+        </table></div></form>
     </c:when>
     <c:otherwise>
         <h1>The Search returned no results</h1>
@@ -49,3 +55,11 @@
 </c:choose>
 <%@include file="includes/footer.jsp" %>
 
+<script>
+    function sortBy(sortBy){
+        let sortByElement = document.getElementById("sortBy");
+        sortByElement.value = sortBy;
+        let submit = document.getElementById("sortForm");
+        submit.submit();
+    }
+</script>

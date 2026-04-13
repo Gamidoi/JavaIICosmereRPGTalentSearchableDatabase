@@ -25,44 +25,59 @@ public class HelloServlet extends HttpServlet {
         Connection conn = pool.getConnection();
         String url = "/searchResultsPage.jsp";
         ResultSet output = null;
-        String sqlQuery = "SELECT * FROM talent";
-        sqlQuery += " left join talentbranch on talent.TalentBranchID = talentbranch.TalentBranchID";
-        sqlQuery += " left join talentbranchswitchradiantpath on talentBranch.TalentBranchID = talentbranchswitchradiantpath.TalentBranchID";
-        sqlQuery += " left join radiantpath on talentbranchswitchradiantpath.RadiantPathID = radiantpath.RadiantPathID";
-        sqlQuery += " left join talentbranchswitchheroicpath on talentBranch.TalentBranchID = talentbranchswitchheroicpath.TalentBranchID";
-        sqlQuery += " left join heroicpath on talentbranchswitchheroicpath.HeroicPathID = heroicpath.HeroicPathID";
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("SELECT * FROM talent");
+        sqlQuery.append(" left join talentbranch on talent.TalentBranchID = talentbranch.TalentBranchID");
+        sqlQuery.append(" left join talentbranchswitchradiantpath on talentBranch.TalentBranchID = talentbranchswitchradiantpath.TalentBranchID");
+        sqlQuery.append(" left join radiantpath on talentbranchswitchradiantpath.RadiantPathID = radiantpath.RadiantPathID");
+        sqlQuery.append(" left join talentbranchswitchheroicpath on talentBranch.TalentBranchID = talentbranchswitchheroicpath.TalentBranchID");
+        sqlQuery.append(" left join heroicpath on talentbranchswitchheroicpath.HeroicPathID = heroicpath.HeroicPathID");
 
 
         String descriptionSearch = request.getParameter("descriptionSearch");
+        request.setAttribute("descriptionSearch", descriptionSearch);
         String nameSearch = request.getParameter("nameSearch");
+        request.setAttribute("nameSearch", nameSearch);
         String flavorSearch = request.getParameter("flavorSearch");
+        request.setAttribute("flavorSearch", flavorSearch);
+        String sortBy = request.getParameter("sortBy");
+        request.setAttribute("sortBy", sortBy);
+        boolean hasOrderedSearch = (!(sortBy == null) && !sortBy.isEmpty());
 
         boolean hasWhereKeyword = false;
         if (descriptionSearch != null && !descriptionSearch.isEmpty()){
-            sqlQuery += " WHERE TalentDescription LIKE \"%" + descriptionSearch + "%\"";
+            sqlQuery.append(" WHERE TalentDescription LIKE \"%" + descriptionSearch + "%\"");
             hasWhereKeyword= true;
         }
         if (nameSearch != null && !nameSearch.isEmpty()){
             if (!hasWhereKeyword){
-                sqlQuery += " WHERE ";
+                sqlQuery.append(" WHERE ");
                 hasWhereKeyword = true;
             } else {
-                sqlQuery += " AND ";
+                sqlQuery.append(" AND ");
             }
-            sqlQuery += "TalentName LIKE \"%" + nameSearch + "%\"";
+            sqlQuery.append("TalentName LIKE \"%" + nameSearch + "%\"");
         }
         if (flavorSearch != null && !flavorSearch.isEmpty()){
             if (!hasWhereKeyword){
-                sqlQuery += " WHERE ";
+                sqlQuery.append(" WHERE ");
                 hasWhereKeyword = true;
             } else {
-                sqlQuery += " AND ";
+                sqlQuery.append(" AND ");
             }
-            sqlQuery += " FlavorText LIKE \"%" + flavorSearch + "%\"";
+            sqlQuery.append(" FlavorText LIKE \"%" + flavorSearch + "%\"");
+        }
+        if (sortBy != null && !sortBy.isEmpty()){
+            sqlQuery.append(" ORDER BY ISNULL(" + sortBy + "), " + sortBy);
+        }
+        if (sortBy != null && sortBy.contains("Cost")){
+            sqlQuery.append(" DESC");
         }
         System.out.println(sqlQuery);
+
+
         try {
-            output = conn.createStatement().executeQuery(sqlQuery);
+            output = conn.createStatement().executeQuery(sqlQuery.toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();
@@ -88,7 +103,8 @@ public class HelloServlet extends HttpServlet {
                 int radiantPathID = output.getInt("RadiantPathID");
                 String heroicPathName = output.getString("HeroicPathName");
                 int heroicPathID = output.getInt("heroicPathID");
-                if (radiantPathName != null) {
+
+                if (radiantPathName != null && !hasOrderedSearch) {
                     if (talentResults.getLast().getPrimaryKey() == eachTalent.getPrimaryKey()) {
                         talentResults.getLast().setRadiantPath2(radiantPathName);
                         talentResults.getLast().setRadiantPath2ID(radiantPathID);
@@ -97,6 +113,9 @@ public class HelloServlet extends HttpServlet {
                         eachTalent.setRadiantPath1(radiantPathName);
                         eachTalent.setRadiantPath1ID(radiantPathID);
                     }
+                } else {
+                    eachTalent.setRadiantPath1(radiantPathName);
+                    eachTalent.setRadiantPath1ID(radiantPathID);
                 }
                 if (repeatEntryForRadiantPath){continue;}
                 if (heroicPathName != null){
@@ -116,9 +135,7 @@ public class HelloServlet extends HttpServlet {
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
     }
 

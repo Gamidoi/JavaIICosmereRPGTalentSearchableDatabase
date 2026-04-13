@@ -2,17 +2,17 @@
 <br/>
 <form  action="search" method="post">
     <label>Search in Talent Description:
-        <input type="text" name="descriptionSearch"/>
+        <input type="text" name="descriptionSearch" value="${descriptionSearch}"/>
     </label>
     <br/>
     <p onClick="toggleSearchView()" id="viewToggleButton" class="toggleViewMore">More Search Options ( + )</p>
     <div id="moreSearchOptions" style="display: none">
         <label>Search in Talent Name:
-            <input type="text" name="nameSearch"/>
+            <input type="text" name="nameSearch" value="${nameSearch}"/>
         </label>
         <br/>
         <label>Search in Talent Flavor Text:
-            <input type="text" name="flavorSearch"/>
+            <input type="text" name="flavorSearch" value="${flavorSearch}"/>
         </label>
         <br/>
     </div>
