@@ -5,23 +5,23 @@ import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class ConnectionPool {
+public class ConnectionPoolTalents {
 
-    private static ConnectionPool pool = null;
+    private static ConnectionPoolTalents pool = null;
     private static DataSource dataSource = null;
 
-    private ConnectionPool() {
+    private ConnectionPoolTalents() {
         try {
             InitialContext ic = new InitialContext();
             dataSource = (DataSource) ic.lookup("java:/comp/env/jdbc/reader");
         } catch (NamingException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
-    public static synchronized ConnectionPool getInstance() {
+    public static synchronized ConnectionPoolTalents getInstance() {
         if (pool == null) {
-            pool = new ConnectionPool();
+            pool = new ConnectionPoolTalents();
         }
         return pool;
     }
@@ -30,7 +30,7 @@ public class ConnectionPool {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -39,7 +39,7 @@ public class ConnectionPool {
         try {
             c.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }

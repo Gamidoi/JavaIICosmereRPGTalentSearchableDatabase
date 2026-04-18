@@ -8,4 +8,16 @@
         <link rel="stylesheet" href="styles/styles.css">
     </head>
     <body>
+        <div>
+            <a href="index.jsp" class="headerNavigation">Main&nbspPage</a>
+            <c:choose>
+                <c:when test="${userName == null}">
+                    <a href="SignInSignUp.jsp" class="headerNavigation">Character&nbspSheet</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="characterPage.jsp" class="headerNavigation">Character&nbspSheet</a>
+                    <form style="float: right" action="signOut" method="post"><input type="submit" value="Sign Out"></form>
+                </c:otherwise>
+            </c:choose>
+        </div>
 

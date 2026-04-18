@@ -1,0 +1,63 @@
+package org.example.cis175_fp_cosmererpgtalentsdatabaseandcharactertracking;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+
+@WebServlet(name = "signUp", value = "/signUp")
+public class SignUpServlet  extends HttpServlet {
+    public void init() {
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String url = "/SignInSignUp.jsp";
+        ConnectionPoolCharacters pool = ConnectionPoolCharacters.getInstance();
+        Connection conn = pool.getConnection();
+        ResultSet output = null;
+        StringBuilder sqlQuery = new StringBuilder();
+        String userName = request.getParameter("userName");
+        String password = request.getParameter("userPassword1");
+        if (password.equals(request.getParameter("userPassword2"))){
+            sqlQuery.append("insert into users (name, password, currentCharacter) values (\"");
+            sqlQuery.append(userName);
+            sqlQuery.append("\", \"");
+            sqlQuery.append(password);
+            sqlQuery.append("\", 0)");
+
+            try {
+                conn.createStatement().executeUpdate(sqlQuery.toString());
+                url = "/characterPage.jsp";
+                HttpSession userSession = request.getSession();
+                userSession.setAttribute("userName", userName);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.getStackTrace();
+                String errorMessage = "There was a problem signing up";
+                request.setAttribute("signUpMessage", errorMessage);
+            }
+        } else {
+            String errorMessage = "Passwords do not Match.";
+            request.setAttribute("signUpMessage", errorMessage);
+        }
+
+
+
+        pool.freeConnection(conn);
+        getServletContext().getRequestDispatcher(url).forward(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    public void destroy() {
+    }
+}

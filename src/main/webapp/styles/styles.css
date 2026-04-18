@@ -42,7 +42,19 @@ td {
 .wideTableColumn{
     min-width: 250px;
 }
-
+.headerNavigation{
+    text-decoration: underline;
+    font-size: 18px;
+    margin: 10px;
+    padding: 3px;
+    background-color: #662222FF;
+    color: #FAEBD7FF;
+}
+.SignInSignUpFormsDiv{
+    float: left;
+    padding-left: 45px;
+    padding-bottom: 20px;
+}
 
 @media screen and (max-width: 767px) {
     body {
@@ -52,6 +64,9 @@ td {
         overflow-x: auto;
         max-height: 500px;
         overflow-y: auto;
-
+    }
+    .SignInSignUpFormsDiv {
+        float: none;
+        margin-top: 45px;
     }
 }

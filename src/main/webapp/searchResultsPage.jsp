@@ -3,7 +3,6 @@
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/talentDescriptionSearchbars.jsp" %>
 
-<p onclick="sortBy('TalentName')">This is a test "button"</p>
 <c:choose>
     <c:when test="${talentResults.size() > 0}">
         <form id="sortForm" action="search" method="post">

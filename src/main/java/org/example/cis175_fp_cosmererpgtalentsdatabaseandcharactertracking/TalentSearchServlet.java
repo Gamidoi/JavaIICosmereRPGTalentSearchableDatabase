@@ -8,12 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
 @WebServlet(name = "search", value = "/search")
-public class HelloServlet extends HttpServlet {
+public class TalentSearchServlet extends HttpServlet {
     private String message;
 
     public void init() {
@@ -21,7 +20,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ConnectionPool pool = ConnectionPool.getInstance();
+        ConnectionPoolTalents pool = ConnectionPoolTalents.getInstance();
         Connection conn = pool.getConnection();
         String url = "/searchResultsPage.jsp";
         ResultSet output = null;

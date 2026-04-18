@@ -15,4 +15,19 @@
         removeAbandonedTimeout="60"
         type="javax.sql.DataSource"
     />
+    <Resource
+        name="jdbc/character"
+        auth="Container"
+        driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://50.80.0.128:3306/cosmererpgcharacters"
+        username="character_access"
+        password="BadPassword1!"
+        maxActive="5"
+        maxIdle="5"
+        maxWait="10000"
+        logAbandoned="true"
+        removeAbandoned="true"
+        removeAbandonedTimeout="60"
+        type="javax.sql.DataSource"
+    />
 </Context>
