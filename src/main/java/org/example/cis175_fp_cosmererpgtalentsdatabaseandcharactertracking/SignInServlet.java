@@ -40,10 +40,11 @@ public class SignInServlet  extends HttpServlet {
                 int currentCharacterID = output.getInt("currentCharacter");
                 if (currentCharacterID != 0){
                     Utility.readCurrentCharacter(conn,userName, currentCharacterID, userSession);
+                    Utility.readCharacterNames(conn, userName, userSession);
                 } else {
                     Utility.createNewCharacter(conn, userName, userSession);
+                    Utility.readCharacterNames(conn, userName, userSession);
                 }
-                Utility.readCharacterNames(conn, userName, userSession);
             } else {
                 String errorMessage = "The password was incorrect.";
                 request.setAttribute("signInMessage", errorMessage);

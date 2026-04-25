@@ -72,8 +72,6 @@ public class TalentSearchServlet extends HttpServlet {
         if (sortBy != null && sortBy.contains("Cost")){
             sqlQuery.append(" DESC");
         }
-        System.out.println(sqlQuery);
-
 
         try {
             output = conn.createStatement().executeQuery(sqlQuery.toString());

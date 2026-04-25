@@ -18,9 +18,9 @@ public class CosmereCharacter {
     private int presence;
 
     public CosmereCharacter(){
-        name = "";
+        name = userName = "";
         level = 1;
-        maxHP = currHP = strength = speed = intellect = willpower = awareness = presence = 0;
+        characterID = maxHP = currHP = strength = speed = intellect = willpower = awareness = presence = 0;
     }
     public CosmereCharacter(ResultSet output) throws SQLException{
         parseSQLResult(output);
@@ -31,14 +31,23 @@ public class CosmereCharacter {
         characterID = newCharacterID;
         userName = newUserName;
         level = newLevel;
+        if (level > 30){level = 30;}
         maxHP = newMaxHP;
+        if (maxHP > 500){maxHP = 500;}
         currHP = newCurrHP;
+        if (currHP > 500 || currHP > maxHP){currHP = maxHP;}
         strength = newStrength;
+        if (strength > 15){strength = 15;}
         speed = newSpeed;
+        if (speed > 15){speed = 15;}
         intellect = newIntellect;
+        if (intellect > 15){intellect = 15;}
         willpower = newWillpower;
+        if (willpower > 15){willpower = 15;}
         awareness = newAwareness;
+        if (awareness > 15){awareness = 15;}
         presence = newPresence;
+        if (presence > 15){presence = 15;}
     }
 
     public void parseSQLResult(ResultSet output) throws SQLException {
@@ -112,6 +121,10 @@ public class CosmereCharacter {
         return (output.toString());
     }
 
+    public String toSQLDelete(){
+        return ("delete from characters where characterID = " + characterID);
+    }
+
     public int getPresence() {return presence;}
     public int getAwareness() {return awareness;}
     public int getWillpower() {return willpower;}
@@ -125,16 +138,17 @@ public class CosmereCharacter {
     public int getLevel() {return level;}
     public String getUserName() {return userName;}
 
-    public void setPresence(int presence) {this.presence = presence;}
-    public void setAwareness(int awareness) {this.awareness = awareness;}
-    public void setWillpower(int willpower) {this.willpower = willpower;}
-    public void setIntellect(int intellect) {this.intellect = intellect;}
-    public void setSpeed(int speed) {this.speed = speed;}
-    public void setStrength(int strength) {this.strength = strength;}
-    public void setCurrHP(int currHP) {this.currHP = currHP;}
-    public void setMaxHP(int maxHP) {this.maxHP = maxHP;}
+    public void setPresence(int presence) {this.presence = Math.min(presence, 15);}
+    public void setAwareness(int awareness) {this.awareness = Math.min(awareness, 15);}
+    public void setWillpower(int willpower) {this.willpower = Math.min(willpower, 15);}
+    public void setIntellect(int intellect) {this.intellect = Math.min(intellect, 15);}
+    public void setSpeed(int speed) {this.speed = Math.min(speed, 15);}
+    public void setStrength(int strength) {this.strength = Math.min(strength, 15);}
+    public void setCurrHP(int currHP) {this.currHP = Math.min(currHP, maxHP);}
+    public void setMaxHP(int maxHP) {this.maxHP = Math.min(maxHP, 500);}
     public void setName(String name) {this.name = name;}
     public void setCharacterID(int characterID) {this.characterID = characterID;}
-    public void setLevel(int level) {this.level = level;}
+    public void setLevel(int level) {this.level = Math.min(level, 30);}
     public void setUserName(String userName) {this.userName = userName;}
+
 }

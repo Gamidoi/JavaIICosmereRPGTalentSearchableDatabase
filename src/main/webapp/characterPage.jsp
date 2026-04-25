@@ -13,17 +13,20 @@
 <form id="updateForm" action="update" method="post">
     <label>Character Name: <input onchange="update()" type="text" name="name" value="${character.name}" /></label>
     <br>
-    <label>Character Level: <input onchange="update()" type="number" name="level" value="${character.level}" /></label>
+    <label>Character Level: <input onchange="update()" type="number" name="level" value="${character.level}" max="30"/></label>
     <br>
-    <label>Current HP: <input onchange="update()" type="number" name="currHP" value="${character.currHP}" /> / <input onchange="update()" type="number" name="maxHP" value="${character.maxHP}" /></label>
+    <label>Current HP: <input onchange="update()" type="number" name="currHP" value="${character.currHP}" max="500"/> / <input onchange="update()" type="number" name="maxHP" value="${character.maxHP}"  max="500"/></label>
     <br>
     <h2>Stats:</h2>
-    <label>Strength: <input onchange="update()" type="number" name="strength" value="${character.strength}" /></label><br>
-    <label>Speed: <input onchange="update()" type="number" name="speed" value="${character.speed}" /></label><br>
-    <label>Intellect: <input onchange="update()" type="number" name="intellect" value="${character.intellect}" /></label><br>
-    <label>Willpower: <input onchange="update()" type="number" name="willpower" value="${character.willpower}" /></label><br>
-    <label>Awareness: <input onchange="update()" type="number" name="awareness" value="${character.awareness}" /></label><br>
-    <label>Presence: <input onchange="update()" type="number" name="presence" value="${character.presence}" /></label>
+    <label>Strength: <input onchange="update()" type="number" name="strength" value="${character.strength}"  max="10"/></label><br>
+    <label>Speed: <input onchange="update()" type="number" name="speed" value="${character.speed}"  max="10"/></label><br>
+    <label>Intellect: <input onchange="update()" type="number" name="intellect" value="${character.intellect}"  max="10"/></label><br>
+    <label>Willpower: <input onchange="update()" type="number" name="willpower" value="${character.willpower}"  max="10"/></label><br>
+    <label>Awareness: <input onchange="update()" type="number" name="awareness" value="${character.awareness}"  max="10"/></label><br>
+    <label>Presence: <input onchange="update()" type="number" name="presence" value="${character.presence}"  max="10"/></label>
+</form>
+<form action="delete" method="post">
+    <input type="submit" value="Delete Character" />
 </form>
 
 

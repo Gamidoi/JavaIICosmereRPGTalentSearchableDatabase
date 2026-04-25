@@ -92,6 +92,7 @@ public class UpdateCharacterServlet extends HttpServlet {
             }
         }
 
+        pool.freeConnection(conn);
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
