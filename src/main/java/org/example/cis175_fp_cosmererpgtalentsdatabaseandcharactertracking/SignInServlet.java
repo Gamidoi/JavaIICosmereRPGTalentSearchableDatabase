@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @WebServlet(name = "signIn", value = "/signIn")
 public class SignInServlet  extends HttpServlet {
@@ -36,15 +37,13 @@ public class SignInServlet  extends HttpServlet {
                 url = "/characterPage.jsp";
                 HttpSession userSession = request.getSession();
                 userSession.setAttribute("userName", userName);
-                if (output.getInt("currentCharacter") != 0){
-                    sqlQuery = new StringBuilder();
-                    sqlQuery.append("select * from characters where characterID = ");
-                    sqlQuery.append(output.getInt("currentCharacter"));
-                    ResultSet CharacterOutput = conn.createStatement().executeQuery(sqlQuery.toString());
-                    CharacterOutput.next();
-                    CosmereCharacter character = new CosmereCharacter(CharacterOutput);
-                    userSession.setAttribute("character", character);
+                int currentCharacterID = output.getInt("currentCharacter");
+                if (currentCharacterID != 0){
+                    Utility.readCurrentCharacter(conn,userName, currentCharacterID, userSession);
+                } else {
+                    Utility.createNewCharacter(conn, userName, userSession);
                 }
+                Utility.readCharacterNames(conn, userName, userSession);
             } else {
                 String errorMessage = "The password was incorrect.";
                 request.setAttribute("signInMessage", errorMessage);
@@ -59,6 +58,7 @@ public class SignInServlet  extends HttpServlet {
         pool.freeConnection(conn);
         getServletContext().getRequestDispatcher(url).forward(request, response);
     }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

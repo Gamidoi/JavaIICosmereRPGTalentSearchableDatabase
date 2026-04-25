@@ -12,7 +12,7 @@ import java.sql.Connection;
 
 
 @WebServlet(name = "update", value = "/update")
-public class UpdateCharacter extends HttpServlet {
+public class UpdateCharacterServlet extends HttpServlet {
     public void init() {
     }
 
@@ -21,10 +21,10 @@ public class UpdateCharacter extends HttpServlet {
         ConnectionPoolCharacters pool = ConnectionPoolCharacters.getInstance();
         Connection conn = pool.getConnection();
         String sqlQuery;
-        HttpSession session = request.getSession();
-        String userName = session.getAttribute("userName").toString();
+        HttpSession userSession = request.getSession();
+        String userName = userSession.getAttribute("userName").toString();
 
-        CosmereCharacter currentCharacter = (CosmereCharacter) session.getAttribute("character");
+        CosmereCharacter currentCharacter = (CosmereCharacter) userSession.getAttribute("character");
 
         int level = currentCharacter.getLevel();
         int maxHP = currentCharacter.getMaxHP();
@@ -80,13 +80,16 @@ public class UpdateCharacter extends HttpServlet {
             intellect, willpower, awareness, presence
         );
 
-        session.setAttribute("character", character);
+        userSession.setAttribute("character", character);
         sqlQuery = character.toSQLUpdate();
-        try {
-            conn.createStatement().executeUpdate(sqlQuery);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            e.getStackTrace();
+        if (characterID != 0) {
+            try {
+                conn.createStatement().executeUpdate(sqlQuery);
+                Utility.readCharacterNames(conn, userName, userSession);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.getStackTrace();
+            }
         }
 
         getServletContext().getRequestDispatcher(url).forward(request, response);

@@ -43,6 +43,7 @@ public class CosmereCharacter {
 
     public void parseSQLResult(ResultSet output) throws SQLException {
         characterID = output.getInt("characterID");
+        userName = output.getString("userName");
         name = output.getString("name");
         level = output.getInt("level");
         maxHP = output.getInt("maxHP");
@@ -80,7 +81,34 @@ public class CosmereCharacter {
         output.append(presence);
         output.append(" where characterID = ");
         output.append(characterID);
-        System.out.println(output);
+        //System.out.println(output);
+        return (output.toString());
+    }
+    public String toSQLInsert(){
+        StringBuilder output = new StringBuilder("insert into characters (name, userName, level, maxHP, currHP, strength, speed, intellect, willpower, awareness, presence) values (\"");
+        output.append(name);
+        output.append("\", \"");
+        output.append(userName);
+        output.append("\", ");
+        output.append(level);
+        output.append(", ");
+        output.append(maxHP);
+        output.append(", ");
+        output.append(currHP);
+        output.append(", ");
+        output.append(strength);
+        output.append(", ");
+        output.append(speed);
+        output.append(", ");
+        output.append(intellect);
+        output.append(", ");
+        output.append(willpower);
+        output.append(", ");
+        output.append(awareness);
+        output.append(", ");
+        output.append(presence);
+        output.append(")");
+        //System.out.println(output);
         return (output.toString());
     }
 
@@ -95,6 +123,7 @@ public class CosmereCharacter {
     public String getName() {return name;}
     public int getCharacterID() {return characterID;}
     public int getLevel() {return level;}
+    public String getUserName() {return userName;}
 
     public void setPresence(int presence) {this.presence = presence;}
     public void setAwareness(int awareness) {this.awareness = awareness;}
@@ -107,4 +136,5 @@ public class CosmereCharacter {
     public void setName(String name) {this.name = name;}
     public void setCharacterID(int characterID) {this.characterID = characterID;}
     public void setLevel(int level) {this.level = level;}
+    public void setUserName(String userName) {this.userName = userName;}
 }

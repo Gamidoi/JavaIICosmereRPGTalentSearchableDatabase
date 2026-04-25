@@ -36,6 +36,10 @@ public class SignUpServlet  extends HttpServlet {
                 url = "/characterPage.jsp";
                 HttpSession userSession = request.getSession();
                 userSession.setAttribute("userName", userName);
+
+                Utility.createNewCharacter(conn, userName, userSession);
+                Utility.readCharacterNames(conn, userName, userSession);
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.getStackTrace();

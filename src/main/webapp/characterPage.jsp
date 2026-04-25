@@ -1,6 +1,15 @@
 <%@include file="includes/header.jsp" %>
 
 <h1>Player: ${userName}</h1>
+<form id="switchCharacters" action="switch" method="post">
+    <input type="hidden" id="newCharacterID" name="newCharacterID" value="${character.characterID}">
+    <div style="display: flex; flex-direction: row; width: 100%; margin-bottom: 10px;">
+        <p class="characterSelector" onclick="switchCharacters(0)">+New Character+</p>
+        <c:forEach var="otherCharacters" items="${allUserCharacters}">
+            <p class="characterSelector" onclick="switchCharacters(${otherCharacters.getValue()})">${otherCharacters.getKey()}</p>
+        </c:forEach>
+    </div>
+</form>
 <form id="updateForm" action="update" method="post">
     <label>Character Name: <input onchange="update()" type="text" name="name" value="${character.name}" /></label>
     <br>
@@ -22,6 +31,12 @@
 <script>
     function update(){
         let submit = document.getElementById("updateForm");
+        submit.submit();
+    }
+    function switchCharacters(charID){
+        let newCharacterID = document.getElementById("newCharacterID");
+        newCharacterID.value = charID;
+        let submit = document.getElementById("switchCharacters");
         submit.submit();
     }
 </script>
