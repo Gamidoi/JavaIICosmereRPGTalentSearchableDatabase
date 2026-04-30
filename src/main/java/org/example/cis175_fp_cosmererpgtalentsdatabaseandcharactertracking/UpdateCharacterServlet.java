@@ -80,7 +80,6 @@ public class UpdateCharacterServlet extends HttpServlet {
         }
 
 
-        // TODO: character name.
         CosmereCharacter character = new CosmereCharacter(
             request.getParameter("name"), characterID,
             userName, level, maxHP, currHP, strength, speed,
