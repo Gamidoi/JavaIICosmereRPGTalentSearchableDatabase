@@ -9,8 +9,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 @WebServlet(name = "signIn", value = "/signIn")
 public class SignInServlet  extends HttpServlet {
@@ -21,16 +22,15 @@ public class SignInServlet  extends HttpServlet {
         String url = "/SignInSignUp.jsp";
         ConnectionPoolCharacters pool = ConnectionPoolCharacters.getInstance();
         Connection conn = pool.getConnection();
-        ResultSet output = null;
-        StringBuilder sqlQuery = new StringBuilder();
+        ResultSet output;
+
         String userName = request.getParameter("userName");
         String password = request.getParameter("userPassword");
-        sqlQuery.append("select * from users where name = \"");
-        sqlQuery.append(userName);
-        sqlQuery.append("\"");
 
         try {
-            output = conn.createStatement().executeQuery(sqlQuery.toString());
+            PreparedStatement sqlQuery = conn.prepareStatement("select * from users where name = ?");
+            sqlQuery.setString(1, userName);
+            output = sqlQuery.executeQuery();
             output.next();
 
             if (output.getString("password").equals(password)) {
@@ -41,6 +41,9 @@ public class SignInServlet  extends HttpServlet {
                 if (currentCharacterID != 0){
                     Utility.readCurrentCharacter(conn,userName, currentCharacterID, userSession);
                     Utility.readCharacterNames(conn, userName, userSession);
+                    ArrayList<Integer> talentIDs = Utility.getCharacterTalentIDs(conn, currentCharacterID);
+                    ArrayList<Talent> talentResults = Utility.getTalentsFromArrayList(talentIDs);
+                    request.setAttribute("talentResults", talentResults);
                 } else {
                     Utility.createNewCharacter(conn, userName, userSession);
                     Utility.readCharacterNames(conn, userName, userSession);

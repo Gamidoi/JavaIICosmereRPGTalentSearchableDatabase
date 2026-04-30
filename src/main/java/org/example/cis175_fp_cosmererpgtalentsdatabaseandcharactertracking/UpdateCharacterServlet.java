@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 
 
 @WebServlet(name = "update", value = "/update")
@@ -37,7 +38,6 @@ public class UpdateCharacterServlet extends HttpServlet {
         int awareness = currentCharacter.getAwareness();
         int presence = currentCharacter.getPresence();
         int characterID = currentCharacter.getCharacterID();
-        String inventory = currentCharacter.getInventory();
 
         try {level = Integer.parseInt(request.getParameter("level"));
         } catch (Exception e){
@@ -73,17 +73,14 @@ public class UpdateCharacterServlet extends HttpServlet {
             presence = Integer.parseInt(request.getParameter("presence"));
         } catch (Exception e){
             System.out.println(e.getMessage());
-        } try {
-            inventory = request.getParameter("inventory");
-        } catch (Exception e){
-            System.out.println(e.getMessage());
         }
 
 
         CosmereCharacter character = new CosmereCharacter(
             request.getParameter("name"), characterID,
             userName, level, maxHP, currHP, strength, speed,
-            intellect, willpower, awareness, presence, inventory
+            intellect, willpower, awareness, presence,
+            request.getParameter("inventory")
         );
 
         userSession.setAttribute("character", character);
@@ -92,6 +89,9 @@ public class UpdateCharacterServlet extends HttpServlet {
             try {
                 sqlQuery.executeUpdate();
                 Utility.readCharacterNames(conn, userName, userSession);
+                ArrayList<Integer> talentIDs = Utility.getCharacterTalentIDs(conn, characterID);
+                ArrayList<Talent> talentResults = Utility.getTalentsFromArrayList(talentIDs);
+                request.setAttribute("talentResults", talentResults);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.getStackTrace();

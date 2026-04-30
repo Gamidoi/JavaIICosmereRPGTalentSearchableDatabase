@@ -31,8 +31,30 @@ insert into characters values
 (2, "Sam", "qwerty", 5, 5, 17, 2, 2, 2, 2, 2, 2, ""),
 (3, "Sam", "asdfg", 13, 7, 15, 4, 4, 4, 4, 4, 4, "");
 
+create table characterTalents (
+	characterID int unsigned,
+    talentID int,
+    primary key (characterID, talentID),
+    foreign key (characterID) references characters(characterID) on delete cascade);
+    
+insert into characterTalents values
+(1, 7),
+(1, 37);
+
 /* 
 select * from users;
 select * from characters;
+
+select currentCharacter from users where name = 'Sam';
+
+
+update characters set 
+	name = "newName", level = 4, maxHP = 13, currHP = 13, strength = 14, intellect = 2, willpower = 4, awareness = 9, presence = 1 where characterID = 1;
+
+update users set
+	currentCharacter = 2 where name = "test 2";
+    
+select characterID from characters where userName = "Sam";
+delete from characters where characterID = 1;
 
 */

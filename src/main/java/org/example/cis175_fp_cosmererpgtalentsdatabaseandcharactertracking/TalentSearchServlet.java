@@ -45,7 +45,9 @@ public class TalentSearchServlet extends HttpServlet {
 
         boolean hasWhereKeyword = false;
         if (descriptionSearch != null && !descriptionSearch.isEmpty()){
-            sqlQuery.append(" WHERE TalentDescription LIKE \"%" + descriptionSearch + "%\"");
+            sqlQuery.append(" WHERE TalentDescription LIKE \"%");
+            sqlQuery.append(descriptionSearch);
+            sqlQuery.append("%\"");
             hasWhereKeyword= true;
         }
         if (nameSearch != null && !nameSearch.isEmpty()){
@@ -55,7 +57,7 @@ public class TalentSearchServlet extends HttpServlet {
             } else {
                 sqlQuery.append(" AND ");
             }
-            sqlQuery.append("TalentName LIKE \"%" + nameSearch + "%\"");
+            sqlQuery.append("TalentName LIKE \"%").append(nameSearch).append("%\"");
         }
         if (flavorSearch != null && !flavorSearch.isEmpty()){
             if (!hasWhereKeyword){
@@ -64,10 +66,10 @@ public class TalentSearchServlet extends HttpServlet {
             } else {
                 sqlQuery.append(" AND ");
             }
-            sqlQuery.append(" FlavorText LIKE \"%" + flavorSearch + "%\"");
+            sqlQuery.append(" FlavorText LIKE \"%").append(flavorSearch).append("%\"");
         }
         if (sortBy != null && !sortBy.isEmpty()){
-            sqlQuery.append(" ORDER BY ISNULL(" + sortBy + "), " + sortBy);
+            sqlQuery.append(" ORDER BY ISNULL(").append(sortBy).append("), ").append(sortBy);
         }
         if (sortBy != null && sortBy.contains("Cost")){
             sqlQuery.append(" DESC");
@@ -85,22 +87,12 @@ public class TalentSearchServlet extends HttpServlet {
         try {
             while(output.next()) {
                 boolean repeatEntryForRadiantPath = false;
-                Talent eachTalent = new Talent();
-                eachTalent.setPrimaryKey(output.getInt("TalentID"));
-                eachTalent.setName(output.getString("TalentName"));
-                eachTalent.setDescription(output.getString("TalentDescription"));
-                eachTalent.setFlavorText(output.getString("FlavorText"));
-                eachTalent.setActionType(output.getString("ActionType"));
-                eachTalent.setBranch(output.getString("BranchName"));
-                eachTalent.setActionCost(output.getInt("ActionCost"));
-                eachTalent.setFocusCost(output.getInt("FocusCost"));
-                eachTalent.setInvestitureCost(output.getInt("InvestitureCost"));
+                Talent eachTalent = new Talent(output);
 
                 String radiantPathName = output.getString("RadiantOrderName");
                 int radiantPathID = output.getInt("RadiantPathID");
                 String heroicPathName = output.getString("HeroicPathName");
                 int heroicPathID = output.getInt("heroicPathID");
-
                 if (radiantPathName != null && !hasOrderedSearch) {
                     if (talentResults.getLast().getPrimaryKey() == eachTalent.getPrimaryKey()) {
                         talentResults.getLast().setRadiantPath2(radiantPathName);

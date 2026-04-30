@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 @WebServlet(name = "signUp", value = "/signUp")
@@ -20,30 +21,31 @@ public class SignUpServlet  extends HttpServlet {
         String url = "/SignInSignUp.jsp";
         ConnectionPoolCharacters pool = ConnectionPoolCharacters.getInstance();
         Connection conn = pool.getConnection();
-        ResultSet output = null;
-        StringBuilder sqlQuery = new StringBuilder();
+        PreparedStatement sqlQuery;
         String userName = request.getParameter("userName");
         String password = request.getParameter("userPassword1");
         if (password.equals(request.getParameter("userPassword2"))){
-            sqlQuery.append("insert into users (name, password, currentCharacter) values (\"");
-            sqlQuery.append(userName);
-            sqlQuery.append("\", \"");
-            sqlQuery.append(password);
-            sqlQuery.append("\", 0)");
+            if (userName.length() <= 30){
+                try {
+                    sqlQuery = conn.prepareStatement("insert into users (name, password, currentCharacter) values (?, ?, 0)");
+                    sqlQuery.setString(1, userName);
+                    sqlQuery.setString(2, password);
+                    sqlQuery.executeUpdate();
+                    url = "/characterPage.jsp";
+                    HttpSession userSession = request.getSession();
+                    userSession.setAttribute("userName", userName);
 
-            try {
-                conn.createStatement().executeUpdate(sqlQuery.toString());
-                url = "/characterPage.jsp";
-                HttpSession userSession = request.getSession();
-                userSession.setAttribute("userName", userName);
+                    Utility.createNewCharacter(conn, userName, userSession);
+                    Utility.readCharacterNames(conn, userName, userSession);
 
-                Utility.createNewCharacter(conn, userName, userSession);
-                Utility.readCharacterNames(conn, userName, userSession);
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.getStackTrace();
-                String errorMessage = "There was a problem signing up";
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    e.getStackTrace();
+                    String errorMessage = "There was a problem signing up";
+                    request.setAttribute("signUpMessage", errorMessage);
+                }
+            } else {
+                String errorMessage = "User name cannot be more than 30 characters long.";
                 request.setAttribute("signUpMessage", errorMessage);
             }
         } else {

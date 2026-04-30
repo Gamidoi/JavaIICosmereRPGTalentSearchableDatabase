@@ -6,6 +6,12 @@
         <title>Cosmere RPG searchable org.example.cis175_fp_cosmererpgtalentsdatabaseandcharactertracking.Talent Database.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles/styles.css">
+        <script>
+            function goToCharPage(){
+                let goTo = document.getElementById("goToCharPage");
+                goTo.submit();
+            }
+        </script>
     </head>
     <body>
         <div>
@@ -15,7 +21,9 @@
                     <a href="SignInSignUp.jsp" class="headerNavigation">Character&nbspSheet</a>
                 </c:when>
                 <c:otherwise>
-                    <a href="characterPage.jsp" class="headerNavigation">Character&nbspSheet</a>
+                    <form action="goToCharPage" id="goToCharPage">
+                        <p onclick="goToCharPage()" class="headerNavigation">Character&nbspSheet</p>
+                    </form>
                     <form style="float: right" action="signOut" method="post"><input type="submit" value="Sign Out"></form>
                 </c:otherwise>
             </c:choose>

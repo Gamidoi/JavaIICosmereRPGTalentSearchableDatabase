@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,11 +31,15 @@ public class DeleteCharacterServlet extends HttpServlet {
             Map allCharacterNames = (HashMap) userSession.getAttribute("allUserCharacters");
             if (allCharacterNames.isEmpty()){
                 Utility.createNewCharacter(conn, userName, userSession);
-                Utility.readCharacterNames(conn, userName, userSession);
             } else {
                 int characterID = (Integer) allCharacterNames.values().iterator().next();
                 Utility.readCurrentCharacter(conn, userName, characterID, userSession);
+                Utility.updateUserCurrentCharacter(conn, userName, characterID);
+                ArrayList<Integer> talentIDs = Utility.getCharacterTalentIDs(conn, characterID);
+                ArrayList<Talent> talentResults = Utility.getTalentsFromArrayList(talentIDs);
+                request.setAttribute("talentResults", talentResults);
             }
+            Utility.readCharacterNames(conn, userName, userSession);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();

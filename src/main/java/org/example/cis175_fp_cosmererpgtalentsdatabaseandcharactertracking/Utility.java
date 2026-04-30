@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,12 @@ public class Utility {
         userSession.setAttribute("character", character);
 
         sqlQuery = conn.prepareStatement("update users set currentCharacter = ? where name = ?");
+        sqlQuery.setInt(1, characterID);
+        sqlQuery.setString(2, userName);
+        sqlQuery.executeUpdate();
+    }
+    protected static void updateUserCurrentCharacter(Connection conn, String userName, int characterID) throws SQLException {
+        PreparedStatement sqlQuery = conn.prepareStatement("update users set currentCharacter = ? where name = ?");
         sqlQuery.setInt(1, characterID);
         sqlQuery.setString(2, userName);
         sqlQuery.executeUpdate();
@@ -56,5 +63,44 @@ public class Utility {
         if (characterOwner.equals(userName)) {
             userSession.setAttribute("character", character);
         }
+    }
+
+    protected static ArrayList<Integer> getCharacterTalentIDs(Connection conn, int characterID) throws SQLException {
+        ArrayList<Integer> talentIDs = new ArrayList<>();
+        PreparedStatement sqlQuery = conn.prepareStatement("select talentID from characterTalents where characterID = ?");
+        sqlQuery.setInt(1, characterID);
+        ResultSet output = sqlQuery.executeQuery();
+        while (output.next()){
+            talentIDs.add(output.getInt("talentID"));
+        }
+        return talentIDs;
+    }
+
+    protected static ArrayList<Talent> getTalentsFromArrayList(ArrayList<Integer> talentIDs) throws SQLException {
+        ConnectionPoolTalents pool = ConnectionPoolTalents.getInstance();
+        Connection conn = pool.getConnection();
+        ArrayList<Talent> talentResults = new ArrayList<>();
+        StringBuilder talentIDsString = new StringBuilder("(-1");
+        for (int i = 0; i < talentIDs.size(); i++){
+            talentIDsString.append(", ");
+            talentIDsString.append(talentIDs.get(i));
+        }
+        talentIDsString.append(')');
+        PreparedStatement sqlQuery = conn.prepareStatement(
+                "select * from talent " +
+                    " left join talentbranch on talent.TalentBranchID = talentbranch.TalentBranchID" +
+                    " left join talentbranchswitchradiantpath on talentBranch.TalentBranchID = talentbranchswitchradiantpath.TalentBranchID" +
+                    " left join radiantpath on talentbranchswitchradiantpath.RadiantPathID = radiantpath.RadiantPathID" +
+                    " left join talentbranchswitchheroicpath on talentBranch.TalentBranchID = talentbranchswitchheroicpath.TalentBranchID" +
+                    " left join heroicpath on talentbranchswitchheroicpath.HeroicPathID = heroicpath.HeroicPathID" +
+                    " where talentID in " + talentIDsString.toString());
+
+        ResultSet talents = sqlQuery.executeQuery();
+        while (talents.next()){
+            Talent newTalent = new Talent(talents);
+            talentResults.add(newTalent);
+        }
+        pool.freeConnection(conn);
+        return talentResults;
     }
 }

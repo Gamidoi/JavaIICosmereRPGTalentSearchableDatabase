@@ -21,7 +21,8 @@ public class CosmereCharacter {
     private String inventory;
 
     public CosmereCharacter(){
-        name = userName = inventory =  "";
+        name = "default name";
+        userName = inventory =  "";
         level = 1;
         characterID = maxHP = currHP = strength = speed = intellect = willpower = awareness = presence = 0;
     }
@@ -31,6 +32,7 @@ public class CosmereCharacter {
     public CosmereCharacter(String newName, int newCharacterID, String newUserName, int newLevel, int newMaxHP, int newCurrHP, int newStrength, int newSpeed,
                             int newIntellect, int newWillpower, int newAwareness, int newPresence, String newInventory){
         name = newName;
+        if (name.length() > 30){name = name.substring(0, 30);}
         characterID = newCharacterID;
         userName = newUserName;
         inventory = newInventory;

@@ -62,6 +62,49 @@ td {
     float: left;
     margin: 2px;
 }
+.defense{
+    text-align: center;
+    font-size: 18px;
+    background-color: #552020ff;
+    border-radius: 3px;
+}
+.statAndDefenseBoxes{
+    margin: 10px;
+    border: #DAA520FF 2px solid;
+    border-radius: 5px;
+    width: 198px;
+}
+.statAndDefenseBoxesDIV{
+    display: flex;
+    flex-direction: row;
+}
+.pairedStatsDiv{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    label {
+        text-align: center;
+    }
+}
+.statInputBox{
+    text-align: center;
+    width: 91px;
+}
+.inventoryBox{
+    resize: none;
+    margin: 10px;
+    width: 640px;
+    height: 250px;
+}
+.deleteCharacterBox{
+    background-color: #773535ff;
+    margin: 20px;
+    padding: 10px;
+    width: 600px;
+}
+.hpBar{
+    width: 70px;
+}
 
 @media screen and (max-width: 767px) {
     body {
@@ -75,5 +118,18 @@ td {
     .SignInSignUpFormsDiv {
         float: none;
         margin-top: 45px;
+    }
+    .statAndDefenseBoxes{
+        width: 300px;
+    }
+    .statAndDefenseBoxesDIV{
+        flex-direction: column;
+    }
+    .statInputBox{
+        width: 142px;
+    }
+    .inventoryBox{
+        width: 300px;
+        height: 250px;
     }
 }

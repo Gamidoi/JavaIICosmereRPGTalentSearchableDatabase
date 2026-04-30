@@ -1,6 +1,8 @@
 package org.example.cis175_fp_cosmererpgtalentsdatabaseandcharactertracking;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Talent implements Serializable {
     private int primaryKey;
@@ -22,6 +24,33 @@ public class Talent implements Serializable {
 
     public Talent(){
         name = description = flavorText = "";
+    }
+
+    public Talent(ResultSet output) throws SQLException {
+
+        primaryKey = output.getInt("TalentID");
+        name = output.getString("TalentName");
+        description = output.getString("TalentDescription");
+        flavorText = output.getString("FlavorText");
+        actionType = output.getString("ActionType");
+        branch = output.getString("BranchName");
+        branchID = output.getInt("TalentBranchID");
+        actionCost = output.getInt("ActionCost");
+        focusCost = output.getInt("FocusCost");
+        investitureCost = output.getInt("InvestitureCost");
+
+        String radiantPathName = output.getString("RadiantOrderName");
+        int radiantPathID = output.getInt("RadiantPathID");
+        if (radiantPathName != null) {
+            radiantPath1 = radiantPathName;
+            radiantPath1ID = radiantPathID;
+        }
+        String heroicPathName = output.getString("HeroicPathName");
+        int heroicPathID = output.getInt("heroicPathID");
+        if (heroicPathName != null) {
+            path = (heroicPathName);
+            pathID = (heroicPathID);
+        }
     }
 
     public int getPrimaryKey(){return primaryKey;}

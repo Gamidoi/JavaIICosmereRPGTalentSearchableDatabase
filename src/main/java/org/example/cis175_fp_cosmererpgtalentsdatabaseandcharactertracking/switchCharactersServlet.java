@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
 
 @WebServlet(name = "switch", value = "/switch")
 public class switchCharactersServlet extends HttpServlet {
@@ -26,7 +27,11 @@ public class switchCharactersServlet extends HttpServlet {
             if (newCharacterID.equals("0")) {
                 Utility.createNewCharacter(conn, userName, userSession);
             } else {
+                Utility.updateUserCurrentCharacter(conn, userName, Integer.parseInt(newCharacterID));
                 Utility.readCurrentCharacter(conn, userName, Integer.parseInt(newCharacterID), userSession);
+                ArrayList<Integer> talentIDs = Utility.getCharacterTalentIDs(conn, Integer.parseInt(newCharacterID));
+                ArrayList<Talent> talentResults = Utility.getTalentsFromArrayList(talentIDs);
+                request.setAttribute("talentResults", talentResults);
             }
             Utility.readCharacterNames(conn, userName, userSession);
         } catch (Exception e) {
