@@ -1,5 +1,7 @@
 package org.example.cis175_fp_cosmererpgtalentsdatabaseandcharactertracking;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -16,9 +18,10 @@ public class CosmereCharacter {
     private int willpower;
     private int awareness;
     private int presence;
+    private String inventory;
 
     public CosmereCharacter(){
-        name = userName = "";
+        name = userName = inventory =  "";
         level = 1;
         characterID = maxHP = currHP = strength = speed = intellect = willpower = awareness = presence = 0;
     }
@@ -26,10 +29,11 @@ public class CosmereCharacter {
         parseSQLResult(output);
     }
     public CosmereCharacter(String newName, int newCharacterID, String newUserName, int newLevel, int newMaxHP, int newCurrHP, int newStrength, int newSpeed,
-                            int newIntellect, int newWillpower, int newAwareness, int newPresence){
+                            int newIntellect, int newWillpower, int newAwareness, int newPresence, String newInventory){
         name = newName;
         characterID = newCharacterID;
         userName = newUserName;
+        inventory = newInventory;
         level = newLevel;
         if (level > 30){level = 30;}
         maxHP = newMaxHP;
@@ -63,62 +67,61 @@ public class CosmereCharacter {
         willpower = output.getInt("willpower");
         awareness = output.getInt("awareness");
         presence = output.getInt("presence");
+        inventory = output.getString("inventory");
     }
 
-    public String toSQLUpdate(){
-        StringBuilder output = new StringBuilder("update characters set name = \"");
-        output.append(name);
-        output.append("\", userName = \"");
-        output.append(userName);
-        output.append("\", level = ");
-        output.append(level);
-        output.append(", maxHP = ");
-        output.append(maxHP);
-        output.append(", currHP = ");
-        output.append(currHP);
-        output.append(", strength = ");
-        output.append(strength);
-        output.append(", speed = ");
-        output.append(speed);
-        output.append(", intellect = ");
-        output.append(intellect);
-        output.append(", willpower = ");
-        output.append(willpower);
-        output.append(", awareness = ");
-        output.append(awareness);
-        output.append(", presence = ");
-        output.append(presence);
-        output.append(" where characterID = ");
-        output.append(characterID);
-        //System.out.println(output);
-        return (output.toString());
+    public PreparedStatement toSQLUpdate(Connection conn){
+        PreparedStatement output;
+        try{
+            output = conn.prepareStatement(
+                    "update characters set name = ?, userName = ?, " +
+                        "inventory = ?, level = ?, maxHP = ?, currHP = ?, " +
+                        "strength = ?, speed = ?, intellect = ?, " +
+                        "willpower = ?, awareness = ?, presence = ? " +
+                        "where characterID = ?");
+
+            output.setString(1, name);
+            output.setString(2, userName);
+            output.setString(3, inventory);
+            output.setInt(4, level);
+            output.setInt(5, maxHP);
+            output.setInt(6, currHP);
+            output.setInt(7, strength);
+            output.setInt(8, speed);
+            output.setInt(9, intellect);
+            output.setInt(10, willpower);
+            output.setInt(11, awareness);
+            output.setInt(12, presence);
+            output.setInt(13, characterID);
+            return (output);
+        } catch (Exception e){
+            return null;
+        }
     }
-    public String toSQLInsert(){
-        StringBuilder output = new StringBuilder("insert into characters (name, userName, level, maxHP, currHP, strength, speed, intellect, willpower, awareness, presence) values (\"");
-        output.append(name);
-        output.append("\", \"");
-        output.append(userName);
-        output.append("\", ");
-        output.append(level);
-        output.append(", ");
-        output.append(maxHP);
-        output.append(", ");
-        output.append(currHP);
-        output.append(", ");
-        output.append(strength);
-        output.append(", ");
-        output.append(speed);
-        output.append(", ");
-        output.append(intellect);
-        output.append(", ");
-        output.append(willpower);
-        output.append(", ");
-        output.append(awareness);
-        output.append(", ");
-        output.append(presence);
-        output.append(")");
-        //System.out.println(output);
-        return (output.toString());
+    public PreparedStatement toSQLInsert(Connection conn){
+        PreparedStatement output;
+        try {
+            output = conn.prepareStatement(
+                    "insert into characters (name, userName, inventory, level, maxHP, currHP, strength, speed, intellect, willpower, awareness, presence) " +
+                        "values (?,?,?,?,?,?,?,?,?,?,?,?)");
+
+
+            output.setString(1, name);
+            output.setString(2, userName);
+            output.setString(3, inventory);
+            output.setInt(4, level);
+            output.setInt(5, maxHP);
+            output.setInt(6, currHP);
+            output.setInt(7, strength);
+            output.setInt(8, speed);
+            output.setInt(9, intellect);
+            output.setInt(10, willpower);
+            output.setInt(11, awareness);
+            output.setInt(12, presence);
+            return (output);
+    } catch (Exception e) {
+            return null;
+        }
     }
 
     public String toSQLDelete(){
@@ -137,6 +140,7 @@ public class CosmereCharacter {
     public int getCharacterID() {return characterID;}
     public int getLevel() {return level;}
     public String getUserName() {return userName;}
+    public String getInventory() {return inventory;}
 
     public void setPresence(int presence) {this.presence = Math.min(presence, 15);}
     public void setAwareness(int awareness) {this.awareness = Math.min(awareness, 15);}
@@ -150,5 +154,5 @@ public class CosmereCharacter {
     public void setCharacterID(int characterID) {this.characterID = characterID;}
     public void setLevel(int level) {this.level = Math.min(level, 30);}
     public void setUserName(String userName) {this.userName = userName;}
-
+    public void setInventory(String inventory) {this.inventory = inventory;}
 }

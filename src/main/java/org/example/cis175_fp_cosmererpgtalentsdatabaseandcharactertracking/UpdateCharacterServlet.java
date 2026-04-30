@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 
 @WebServlet(name = "update", value = "/update")
@@ -20,7 +21,7 @@ public class UpdateCharacterServlet extends HttpServlet {
         String url = "/characterPage.jsp";
         ConnectionPoolCharacters pool = ConnectionPoolCharacters.getInstance();
         Connection conn = pool.getConnection();
-        String sqlQuery;
+        PreparedStatement sqlQuery;
         HttpSession userSession = request.getSession();
         String userName = userSession.getAttribute("userName").toString();
 
@@ -36,6 +37,7 @@ public class UpdateCharacterServlet extends HttpServlet {
         int awareness = currentCharacter.getAwareness();
         int presence = currentCharacter.getPresence();
         int characterID = currentCharacter.getCharacterID();
+        String inventory = currentCharacter.getInventory();
 
         try {level = Integer.parseInt(request.getParameter("level"));
         } catch (Exception e){
@@ -71,20 +73,25 @@ public class UpdateCharacterServlet extends HttpServlet {
             presence = Integer.parseInt(request.getParameter("presence"));
         } catch (Exception e){
             System.out.println(e.getMessage());
+        } try {
+            inventory = request.getParameter("inventory");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
 
 
+        // TODO: character name.
         CosmereCharacter character = new CosmereCharacter(
             request.getParameter("name"), characterID,
             userName, level, maxHP, currHP, strength, speed,
-            intellect, willpower, awareness, presence
+            intellect, willpower, awareness, presence, inventory
         );
 
         userSession.setAttribute("character", character);
-        sqlQuery = character.toSQLUpdate();
+        sqlQuery = character.toSQLUpdate(conn);
         if (characterID != 0) {
             try {
-                conn.createStatement().executeUpdate(sqlQuery);
+                sqlQuery.executeUpdate();
                 Utility.readCharacterNames(conn, userName, userSession);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
