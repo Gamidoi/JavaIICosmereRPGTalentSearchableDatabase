@@ -14,7 +14,7 @@
         </script>
     </head>
     <body>
-        <div>
+        <div class="navigationBar">
             <a href="index.jsp" class="headerNavigation">Main&nbspPage</a>
             <c:choose>
                 <c:when test="${userName == null}">
@@ -24,7 +24,7 @@
                     <form action="goToCharPage" id="goToCharPage">
                         <p onclick="goToCharPage()" class="headerNavigation">Character&nbspSheet</p>
                     </form>
-                    <form style="float: right" action="signOut" method="post"><input type="submit" value="Sign Out"></form>
+                    <form action="signOut" method="post"><input type="submit" value="Sign Out" class="signOutButton"></form>
                 </c:otherwise>
             </c:choose>
         </div>

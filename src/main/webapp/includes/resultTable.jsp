@@ -39,7 +39,10 @@
             <td>${talent.flavorText}</td>
             <c:choose >
                 <c:when test="${userName != null}">
-                    <td><form action="addTalent"><input type="hidden" value="${talent.primaryKey}" name="addTalentIDToCharacter" /><input type="submit" value="add" /></form></td>
+                    <td>
+                        <form action="addTalent"><input type="hidden" value="${talent.primaryKey}" name="addTalentIDToCharacter" /><input type="submit" value="add" /></form>
+                        <form action="removeTalent"><input type="hidden" value="${talent.primaryKey}" name="removeTalentIDFromCharacter" /><input type="submit" value="remove" /></form>
+                    </td>
                 </c:when>
             </c:choose>
         </tr>

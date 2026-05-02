@@ -4,6 +4,23 @@ body {
     font-size: 12px;
     color: #FAEBD7FF;
 }
+.navigationBar {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding: 3px;
+}
+.headerNavigation{
+    text-decoration: underline;
+    font-size: 18px;
+    margin: 10px;
+    padding: 3px;
+    background-color: #662222FF;
+    color: #FAEBD7FF;
+}
+.signOutButton{
+    margin: 13px;
+}
 .resultTable{
     border: #DAA520FF 1px solid;
     border-collapse: collapse;
@@ -41,14 +58,6 @@ td {
 }
 .wideTableColumn{
     min-width: 250px;
-}
-.headerNavigation{
-    text-decoration: underline;
-    font-size: 18px;
-    margin: 10px;
-    padding: 3px;
-    background-color: #662222FF;
-    color: #FAEBD7FF;
 }
 .SignInSignUpFormsDiv{
     float: left;
